@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Spendopia.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Dependency Injection
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+ options.UseSqlServer());
 
 var app = builder.Build();
 
