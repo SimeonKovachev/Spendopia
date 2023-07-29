@@ -9,8 +9,12 @@ html {
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
+    font-family: 'Poppins', sans-serif;
+}
+* {
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
