@@ -1,0 +1,47 @@
+﻿@model Spendopia.Models.Category
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="widget p-5">
+            <form asp-action="Actions">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" name="CategoryId" value="@Model.CategoryId" />
+                <div class="mb-3">
+                    <div class='e-btn-group custom-radiobtn'>
+                        <input type="radio" id="radioleft" name="Type" value="Expense" checked="@(Model.Type == "Expense")" />
+                        <label class="e-btn" for="radioleft">Expense</label>
+                        <input type="radio" id="radiomiddle" name="Type" value="Income" checked="@(Model.Type == "Income")" />
+                        <label class="e-btn" for="radiomiddle">Income</label>
+                    </div>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <ejs-textbox id="title" placeholder="Title" ejs-for="Title" floatLabelType="Always"></ejs-textbox>
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <ejs-textbox id="icon" placeholder="Icon" ejs-for="Icon" floatLabelType="Always"></ejs-textbox>
+                    <span asp-validation-for="Icon" class="text-danger"></span>
+                </div>
+                <ejs-button id="submit" type="Submit" content="Submit"></ejs-button>
+
+            </form>         
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="widget h-100 d-flex justify-content-center align-items-center">
+            <lord-icon src="https://cdn.lordicon.com/fqrjldna.json"
+                       trigger="loop"
+                       delay="2000"
+                       colors="primary:#ffffff,secondary:#691799"
+                       style="width:150px;height:150px">
+            </lord-icon>
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
