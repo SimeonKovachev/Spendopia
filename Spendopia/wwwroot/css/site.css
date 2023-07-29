@@ -15,4 +15,30 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #12161d;
+  color: #fff;
+ 
+}
+
+/*Radio button Group*/
+
+.e-btn-group.custom-radiobtn{
+    width: 100%;
+}
+
+    .e-btn-group.custom-radiobtn .e-btn {
+        width: 50%;
+    }
+
+.custom-radiobtn label.e-btn {
+    box-shadow: none !important;
+    background-color: white;
+    color: #6527BE;
+    border: 3px solid #6527BE;
+}
+
+.e-btn-group.custom-radiobtn input:checked + label.e-btn {
+    background-color: #6527BE;
+    color: white;
+    border: 3px solid #6527BE;
 }

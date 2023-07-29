@@ -1,6 +1,16 @@
-﻿namespace Spendopia.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Spendopia.Models
 {
-    public class ApplicationDbContext
+    public class ApplicationDbContext : DbContext
     {
+        public ApplicationDbContext(DbContextOptions options): base(options)
+        {
+
+        }
+
+
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Category> Categories { get; set; }
     }
 }

@@ -8,7 +8,7 @@ builder.Services.AddControllersWithViews();
 
 //Dependency Injection
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
- options.UseSqlServer());
+ options.UseSqlServer(builder.Configuration.GetConnectionString("SpendopiaConnection")));
 
 var app = builder.Build();
 
