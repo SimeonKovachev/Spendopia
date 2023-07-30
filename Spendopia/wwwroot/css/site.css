@@ -13,7 +13,7 @@ html {
     min-height: 100%;
     font-family: 'Poppins', sans-serif;
 }
-* {
+*:not(.fa-solid):not(.fa):not(.e-icons){
     font-family: 'Poppins', sans-serif;
 }
 
@@ -22,6 +22,13 @@ body {
   background-color: #12161d;
   color: #fff;
  
+}
+
+/*BreadCrumb*/
+
+.e-breadcrumb a, .e-breadcrumb a:hover {
+    text-decoration: none !important;
+    color: inherit !important;
 }
 
 /*Grid*/
@@ -65,7 +72,7 @@ body {
 }
 
 .e-pager .e-numericitem {
-    color: #adb5bd;
+    color: #bb86fc !important;
     background-color: #1a222b;
     padding: 15px !important;
 }
@@ -84,10 +91,20 @@ body {
         background-color: #31373d;
     }
 
+    .e-pager .e-currentitem.e-numericitem.e-focused {
+    box-shadow: 0 0 0 1px #bb86fc inset !important;
+    }
+
 .e-pager div.e-icons:not(.e-disable) {
     color: #fff;
     cursor: pointer;
     font-weight: bold;
+}
+.e-pager div.e-icons.e-pager-default {
+    color: #bb86fc !important;
+}
+.e-grid .e-focused:not(.e-menu-item) {
+    box-shadow: 0 0 0 1px #bb86fc inset !important;
 }
 
 .e-grid .e-pager {
@@ -96,9 +113,26 @@ body {
     border-bottom-right-radius: 5px;
 }
 
-/*Radio button Group*/
+/*Button*/
+.btn:hover {
+    border: 1px solid #bb86fc !important;
+}
+.btn:focus {
+    box-shadow: 0 0 0 1px #bb86fc inset !important;
+}
+.no-a-decoration{
+    text-decoration:none !important;
+    color:inherit !important;
+}
+    .no-a-decoration:hover {
+        color: #bb86fc !important;
+    }
 
-.e-btn-group.custom-radiobtn{
+.btn-main {
+    background-color: #6c757d;
+}
+/*Radio button Group*/
+.e-btn-group.custom-radiobtn {
     width: 100%;
 }
 

@@ -1,13 +1,19 @@
 ﻿@model IEnumerable<Spendopia.Models.Category>
 
+@{
+   ViewData["PageTitle"] = "Categories";
+   ViewData["PageActionText"] = "+ New Category";
+   ViewData["PageActionUrl"] = "/Category/Actions";
+}
+
 <div class="row">
     <div class="col-md-7">
-        <ejs-grid id="categories" dataSource="@Model" allowPaging="true" gridLines="None">
-            <e-grid-pagesettings pageSize="8"></e-grid-pagesettings>
+        <ejs-grid id="categories" dataSource="@Model" allowPaging="true" allowSorting="true" gridLines="None">
+            <e-grid-pagesettings pageSize="10"></e-grid-pagesettings>
             <e-grid-columns>
-                <e-grid-column headerText="Category" field="TitleWithIcon"></e-grid-column>
-                <e-grid-column headerText="Type" template="#typeColumnTemplate" field="Type"></e-grid-column>
-                <e-grid-column headerText="Actions"></e-grid-column>
+                <e-grid-column headerText="Category" width="50%" field="TitleWithIcon"></e-grid-column>
+                <e-grid-column headerText="Type" template="#typeColumnTemplate" width="30%" field="Type"></e-grid-column>
+                <e-grid-column headerText="Actions" template="#actionColumnTemplate" width="20%"></e-grid-column>
             </e-grid-columns>
 
         </ejs-grid>
@@ -17,7 +23,7 @@
             <lord-icon src="https://cdn.lordicon.com/fqrjldna.json"
                        trigger="loop"
                        delay="2000"
-                       colors="primary:#ffffff,secondary:#691799"
+                       colors="primary:#ffffff,secondary:#bb86fc"
                        style="width:150px;height:150px">
             </lord-icon>
         </div>
@@ -31,4 +37,20 @@
     ${else}
         <span class="badge bg-danger">${Type}</span>
     ${/if}
+</script>
+
+<script id="actionColumnTemplate" type="text/x-template">
+    <div class="d-flex flex-row justify-content-start">
+        <a class="btn btn-sm no-a-decoration" href="/Category/Actions/${CategoryId}">
+             <i class="fa-solid fa-pen-to-square"></i>
+        </a>
+        <form action="/Category/Delete/${CategoryId}" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-sm no-a-decoration"
+            onclick="return confirm(&quot;Are you sure to delete this record?&quot;)">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </form>
+
+    </div>
 </script>
