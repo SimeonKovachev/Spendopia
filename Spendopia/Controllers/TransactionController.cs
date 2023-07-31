@@ -28,7 +28,7 @@ namespace Spendopia.Controllers
         // GET: Transaction/Actions
         public IActionResult Actions()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
+            PopulateCategories();
             return View(new Transaction());
         }
 
@@ -43,7 +43,7 @@ namespace Spendopia.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", transaction.CategoryId);
+            PopulateCategories();
             return View(transaction);
         }
 
@@ -64,6 +64,16 @@ namespace Spendopia.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+
+        [NonAction]
+        public void PopulateCategories()
+        {
+            var CategoryCollection = _context.Categories.ToList();
+            Category DefaultCategory = new Category() {CategoryId = 0, Title= "Choose a Category"};
+            CategoryCollection.Insert(0, DefaultCategory);
+            ViewBag.Categories = CategoryCollection;
         }
     }
 }
