@@ -26,10 +26,13 @@ namespace Spendopia.Controllers
         }
 
         // GET: Transaction/Actions
-        public IActionResult Actions()
+        public IActionResult Actions(int id = 0)
         {
-            PopulateCategories();
-            return View(new Transaction());
+            if (id == 0)
+                return View(new Transaction());
+            else
+                return View(_context.Transactions.Find(id));
+
         }
 
         // POST: Transaction/Actions
@@ -39,7 +42,10 @@ namespace Spendopia.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(transaction);
+                if(transaction.TransactionId == 0)
+                    _context.Add(transaction);
+                else
+                    _context.Update(transaction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

@@ -6,50 +6,43 @@
     ViewData["PageActionUrl"] = "/Transaction/Actions";
 }
 
-<h1>Index</h1>
+<div class="row">
+    <div class="col-md-7">
+        <ejs-grid id="transactions" dataSource="@Model" allowPaging="true" allowSorting="true" gridLines="None">
+            <e-grid-pagesettings pageSize="10"></e-grid-pagesettings>
+            <e-grid-columns>
+                <e-grid-column headerText="Category" width="40%" field="CategoryTitleWithIcon"></e-grid-column>
+                <e-grid-column headerText="Date" width="20%" field="Date"
+                type="date" format="dd-MM-yyyy" textAling="Left"></e-grid-column>
+                <e-grid-column headerText="Amount" width="20%" textAling="Right" field="FormattedAmount"></e-grid-column>
+                <e-grid-column headerText="Actions" template="#actionColumnTemplate" width="20%"></e-grid-column>
+            </e-grid-columns>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.CategoryId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TransactionId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TransactionId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        </ejs-grid>
+    </div>
+    <div class="col-md-5">
+        <div class="widget h-100 d-flex justify-content-center align-items-center">
+            <lord-icon src="https://cdn.lordicon.com/qhviklyi.json"
+                       trigger="loop"
+                       delay="2000"
+                       colors="primary:#ffffff,secondary:#bb86fc"
+                       style="width:150px;height:150px">
+            </lord-icon>
+        </div>
+    </div>
+</div>
+<script id="actionColumnTemplate" type="text/x-template">
+    <div class="d-flex flex-row justify-content-start">
+        <a class="btn btn-sm no-a-decoration" href="/Category/Actions/${CategoryId}">
+             <i class="fa-solid fa-pen-to-square"></i>
+        </a>
+        <form action="/Category/Delete/${CategoryId}" method="post">
+    @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-sm no-a-decoration"
+            onclick="return confirm(&quot;Are you sure to delete this record?&quot;)">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </form>
+
+    </div>
+</script>
