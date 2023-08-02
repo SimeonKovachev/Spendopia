@@ -28,6 +28,7 @@ namespace Spendopia.Controllers
         // GET: Transaction/Actions
         public IActionResult Actions(int id = 0)
         {
+            PopulateCategories();
             if (id == 0)
                 return View(new Transaction());
             else
