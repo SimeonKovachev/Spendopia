@@ -145,18 +145,18 @@ body {
 
         #menu .e-menu-item a {
             width: 100%;
-            color: rgb(171, 163, 152);
-            font-weight: 300;
+            color: #cecece;
+            font-weight: 500;
             padding: 7px 5px;
             box-sizing: border-box;
         }
-
+    
     #menu .e-anchor-wrap {
         display: inline-block;
     }
 
     #menu .e-menu-item .e-anchor-wrap span.e-menu-icon {
-        color: rgb(171, 163, 152);
+        color: #bb86fc;
     }
 
     #menu .e-menu-item.e-separator {
@@ -164,8 +164,8 @@ body {
         margin: 5px 5px;
         text-transform: uppercase;
         font-weight: bold;
-        font-size: 13px;
-        color: #65da41;
+        font-size: 11px;
+        color:rgb(171, 163, 152);
     }
 
         #menu .e-menu-item.e-separator:not(:first-child) {
@@ -215,13 +215,80 @@ img.profile-pic {
         line-height: 1;
     }
 
+/*Auth tab navigation*/
+.login-logout-card .card-header {
+    padding: 0px 0px 12px 0px;
+}
+
+.login-logout-card ul.nav-tabs {
+    margin: 0px 0px -12px 0px;
+}
+
+.login-logout-card li.nav-item {
+    width: 50%;
+}
+
+.login-logout-card a.nav-link {
+    font-size: 1rem;
+    color: #495057;
+    text-align: center;
+    padding: 1rem;
+}
+
+.login-logout-card .card-body {
+    padding: 10px 20px;
+}
+
+/*Auth Card Style*/
+.form-control {
+    background-color: rgba(72, 84, 95, 0.3) !important;
+    border-color: #bb86fc;
+}
+.form-control:focus {
+    border-color: #bb86fc !important;
+    box-shadow: 0 0 7px 1px RGBA(187,134,252,0.52) !important;
+}
+/*.form-control:current {
+    background-color: rgba(72, 84, 95)
+}*/
+
+/*Forms*/
+
+
+.form-input:focus {
+    border-color: #4424A7 !important;
+    box-shadow: 0 0 7px 1px #4424A7 !important;
+}
+
 /*Button*/
-.btn:hover {
+.btn-auth:hover {
     border: 1px solid #bb86fc !important;
 }
-.btn:focus {
+
+.btn-auth:focus {
     box-shadow: 0 0 0 1px #bb86fc inset !important;
 }
+
+.btn-form {
+    background-color: #4424A7 !important;
+    border-color: #4424A7 !important;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out !important;
+}
+.btn-form:hover{
+    transform: scale(1.1);
+    box-shadow: 0 0 7px -4px #bb86fc !important;
+}
+
+.btn-action:hover {
+    border: 1px solid #bb86fc !important;
+}
+
+.btn-action:focus {
+    box-shadow: 0 0 0 1px #bb86fc inset !important;
+}
+
+
 .no-a-decoration{
     text-decoration:none !important;
     color:inherit !important;
@@ -244,15 +311,23 @@ img.profile-pic {
 
 .custom-radiobtn label.e-btn {
     box-shadow: none !important;
-    background-color: #691799;
+    background-color: #4424A7;
     color: white;
-    border: 1px solid #691799;
+    border: 1px solid #4424A7;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+.custom-radiobtn label.e-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 7px -3px #12161d !important;
 }
 
 .e-btn-group.custom-radiobtn input:checked + label.e-btn {
-    background-color: #420069;
+    background-color: #1a222b;
+    border-radius:50px;
     color: white;
-    border: 1px solid #420069;
+    border: 1px solid #1a222b;
 }
 
 .widget{
@@ -271,15 +346,15 @@ img.profile-pic {
         }
 
     .widget.income > div:first-child {
-        color: #65da41;
+        color: #6DFC95;
     }
 
     .widget.expense > div:first-child {
-        color: #ff4e48;
+        color: #FCD59F;
     }
 
     .widget.balance > div:first-child {
-        color: #2aa1ff;
+        color: #BB86FC;
     }
 
     .widget.chart {

@@ -41,12 +41,12 @@
 
 <script id="actionColumnTemplate" type="text/x-template">
     <div class="d-flex flex-row justify-content-start">
-        <a class="btn btn-sm no-a-decoration" href="/Category/Actions/${CategoryId}">
+        <a class="btn btn-action btn-sm no-a-decoration" href="/Category/Actions/${CategoryId}">
              <i class="fa-solid fa-pen-to-square"></i>
         </a>
         <form action="/Category/Delete/${CategoryId}" method="post">
             @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-sm no-a-decoration"
+            <button type="submit" class="btn btn-action btn-sm no-a-decoration"
             onclick="return confirm(&quot;Are you sure to delete this record?&quot;)">
                 <i class="fa-solid fa-trash"></i>
             </button>
