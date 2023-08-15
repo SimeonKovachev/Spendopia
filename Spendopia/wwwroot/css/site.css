@@ -103,7 +103,7 @@ body {
     font-weight: bold;
 }
 .e-pager div.e-icons.e-pager-default {
-    color: #bb86fc !important;
+    color:   !important;
 }
 .e-grid .e-focused:not(.e-menu-item) {
     box-shadow: 0 0 0 1px #bb86fc inset !important;
