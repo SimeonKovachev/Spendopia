@@ -1,77 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Spendopia.Models;
+using Spendopia.Services.Interfaces;
 
 namespace Spendopia.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
-        // GET: Category
         public async Task<IActionResult> Index()
         {
-              return _context.Categories != null ? 
-                          View(await _context.Categories.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            return View(categories);
         }
 
-        // GET: Category/Actions
-        public IActionResult Actions(int id = 0)
+        public async Task<IActionResult> Actions(int id = 0)
         {
-            if(id == 0)
+            if (id == 0)
                 return View(new Category());
-            else
-                return View(_context.Categories.Find(id));
+
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+            return View(category);
         }
 
-        // POST: Category/Actions
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Actions([Bind("CategoryId,Title,Icon,Type")] Category category)
+        public async Task<IActionResult> Actions(Category category)
         {
             if (ModelState.IsValid)
             {
-                if(category.CategoryId == 0)        
-                    _context.Add(category);
+                if (category.CategoryId == 0)
+                    await _categoryService.CreateCategoryAsync(category);
                 else
-                    _context.Update(category);
-                await _context.SaveChangesAsync();
+                    await _categoryService.UpdateCategoryAsync(category);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
         }
 
-
-        // POST: Category/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Categories == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
-            }
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
-            {
-                _context.Categories.Remove(category);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            await _categoryService.DeleteCategoryAsync(id);
+            return NoContent();
         }
-
-
     }
 }

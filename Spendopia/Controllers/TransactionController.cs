@@ -1,86 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Spendopia.Models;
+using Spendopia.Services.Interfaces;
 
 namespace Spendopia.Controllers
 {
     public class TransactionController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ITransactionService _transactionService;
+        private readonly ICategoryService _categoryService;
 
-        public TransactionController(ApplicationDbContext context)
+        public TransactionController(ITransactionService transactionService, ICategoryService categoryService)
         {
-            _context = context;
+            _transactionService = transactionService;
+            _categoryService = categoryService;
         }
 
-        // GET: Transaction
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Transactions.Include(t => t.Category);
-            return View(await applicationDbContext.ToListAsync());
+            var transactions = await _transactionService.GetAllTransactionsAsync();
+            return View(transactions);
         }
 
-        // GET: Transaction/Actions
-        public IActionResult Actions(int id = 0)
+        public async Task<IActionResult> Actions(int id = 0)
         {
             PopulateCategories();
             if (id == 0)
                 return View(new Transaction());
-            else
-                return View(_context.Transactions.Find(id));
 
+            var transaction = await _transactionService.GetTransactionByIdAsync(id);
+            return View(transaction);
         }
 
-        // POST: Transaction/Actions
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Actions([Bind("TransactionId,CategoryId,Amount,Note,Date")] Transaction transaction)
+        public async Task<IActionResult> Actions(Transaction transaction)
         {
             if (ModelState.IsValid)
             {
-                if(transaction.TransactionId == 0)
-                    _context.Add(transaction);
+                if (transaction.TransactionId == 0)
+                    await _transactionService.CreateTransactionAsync(transaction);
                 else
-                    _context.Update(transaction);
-                await _context.SaveChangesAsync();
+                    await _transactionService.UpdateTransactionAsync(transaction);
+
                 return RedirectToAction(nameof(Index));
             }
             PopulateCategories();
             return View(transaction);
         }
 
-        // POST: Transaction/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Transactions == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Transactions'  is null.");
-            }
-            var transaction = await _context.Transactions.FindAsync(id);
-            if (transaction != null)
-            {
-                _context.Transactions.Remove(transaction);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            await _transactionService.DeleteTransactionAsync(id);
+            return NoContent();
         }
-
 
         [NonAction]
         public void PopulateCategories()
         {
-            var CategoryCollection = _context.Categories.ToList();
-            Category DefaultCategory = new Category() {CategoryId = 0, Title= "Choose a Category"};
-            CategoryCollection.Insert(0, DefaultCategory);
-            ViewBag.Categories = CategoryCollection;
+            var categories = _categoryService.GetAllCategoriesAsync().Result.ToList();
+            Category defaultCategory = new Category { CategoryId = 0, Title = "Choose a Category" };
+            categories.Insert(0, defaultCategory);
+            ViewBag.Categories = categories;
         }
     }
 }
