@@ -1,95 +1,80 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Spendopia.Models;
-using System.Globalization;
+using Spendopia.Services.Interfaces;
 
 namespace Spendopia.Controllers
 {
     public class DashboardController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        public DashboardController(ApplicationDbContext context)
-        { 
-            _context= context;
+        private readonly ITransactionService _transactionService;
+        private readonly ICategoryService _categoryService;
+
+        public DashboardController(ITransactionService transactionService, ICategoryService categoryService)
+        {
+            _transactionService = transactionService;
+            _categoryService = categoryService;
         }
+
         public async Task<IActionResult> Index()
         {
-            //Last 14 days
             DateTime StartDate = DateTime.Today.AddDays(-6);
             DateTime EndDate = DateTime.Today;
 
-            List<Transaction> SelectedTransactions = await _context.Transactions
-                .Include(x => x.Category)
-                .Where(y => y.Date >= StartDate && y.Date <= EndDate)
-                .ToListAsync();
+            var selectedTransactions = await _transactionService.GetAllTransactionsAsync();
 
-
-            //Total Income
-            int TotalIncome = SelectedTransactions
-                .Where(i => i.Category.Type == "Income")
-                .Sum(j => j.Amount);
+            int TotalIncome = selectedTransactions
+                .Where(t => t.Category.Type == "Income")
+                .Sum(t => t.Amount);
             ViewBag.TotalIncome = TotalIncome.ToString("C0");
 
-            //Total Expense
-            int TotalExpense = SelectedTransactions
-                .Where(i => i.Category.Type == "Expense")
-                .Sum(j => j.Amount);
+            int TotalExpense = selectedTransactions
+                .Where(t => t.Category.Type == "Expense")
+                .Sum(t => t.Amount);
             ViewBag.TotalExpense = TotalExpense.ToString("C0");
 
-
-            //Balance
             int Balance = TotalIncome - TotalExpense;
-            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
-            culture.NumberFormat.CurrencyNegativePattern = 1;
-            ViewBag.Balance = String.Format(culture, "{0:C0}", Balance);
+            ViewBag.Balance = Balance.ToString("C0");
 
-            //Donut chart- Expense by category
-            ViewBag.DonutChartData = SelectedTransactions
-                .Where(i => i.Category.Type == "Expense")
-                .GroupBy(j => j.Category.CategoryId)
-                .Select(k => new
+            var donutChartData = selectedTransactions
+                .Where(t => t.Category.Type == "Expense")
+                .GroupBy(t => t.Category.CategoryId)
+                .Select(g => new
                 {
-                    categoryTitleWithIcon = k.First().Category.Icon + " " + k.First().Category.Title,
-                    amount = k.Sum(j => j.Amount),
-                    formattedAmount = k.Sum(j => j.Amount).ToString("C0"),
+                    categoryTitleWithIcon = g.First().Category.Icon + " " + g.First().Category.Title,
+                    amount = g.Sum(t => t.Amount),
+                    formattedAmount = g.Sum(t => t.Amount).ToString("C0")
                 })
-                .OrderByDescending(l=> l.amount)
+                .OrderByDescending(g => g.amount)
                 .ToList();
+            ViewBag.DonutChartData = donutChartData;
 
-            /*Splina Chart - TotalExpense vs Income*/
-            //Income
-            List<SplineChartData> IncomeSummary = SelectedTransactions
-                .Where(i => i.Category.Type == "Income")
-                .GroupBy(j=> j.Date)
-                .Select( k => new SplineChartData()
+            var incomeSummary = selectedTransactions
+                .Where(t => t.Category.Type == "Income")
+                .GroupBy(t => t.Date)
+                .Select(g => new SplineChartData
                 {
-                    day = k.First().Date.ToString("dd-MM"),
-                    income = k.Sum(l=> l.Amount)
+                    day = g.First().Date.ToString("dd-MM"),
+                    income = g.Sum(t => t.Amount)
                 })
                 .ToList();
 
-            //Expense
-            List<SplineChartData> ExpenseSummary = SelectedTransactions
-                .Where(i => i.Category.Type == "Expense")
-                .GroupBy(j=> j.Date)
-                .Select( k => new SplineChartData()
+            var expenseSummary = selectedTransactions
+                .Where(t => t.Category.Type == "Expense")
+                .GroupBy(t => t.Date)
+                .Select(g => new SplineChartData
                 {
-                    day = k.First().Date.ToString("dd-MM"),
-                    expense = k.Sum(l=> l.Amount)
+                    day = g.First().Date.ToString("dd-MM"),
+                    expense = g.Sum(t => t.Amount)
                 })
                 .ToList();
 
-            //Combine Income & expense
             string[] Last7Days = Enumerable.Range(0, 7)
                 .Select(i => StartDate.AddDays(i).ToString("dd-MM"))
                 .ToArray();
 
             ViewBag.SplineChartData = from day in Last7Days
-                                      join income in IncomeSummary on day equals income.day
-                                      into dayIncomeJoined
+                                      join income in incomeSummary on day equals income.day into dayIncomeJoined
                                       from income in dayIncomeJoined.DefaultIfEmpty()
-                                      join expense in ExpenseSummary on day equals expense.day
-                                      into dayExpenseJoined
+                                      join expense in expenseSummary on day equals expense.day into dayExpenseJoined
                                       from expense in dayExpenseJoined.DefaultIfEmpty()
                                       select new
                                       {
@@ -98,16 +83,15 @@ namespace Spendopia.Controllers
                                           expense = expense == null ? 0 : expense.expense,
                                       };
 
-            //Recent Transactions
-            ViewBag.RecentTransactions = await _context.Transactions
-                .Include(i => i.Category)
-                .OrderByDescending(j => j.Date)
+            ViewBag.RecentTransactions = selectedTransactions
+                .OrderByDescending(t => t.Date)
                 .Take(5)
-                .ToListAsync();
+                .ToList();
 
             return View();
         }
     }
+
     public class SplineChartData
     {
         public string day;
